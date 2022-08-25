@@ -1,5 +1,10 @@
-.vsconfig
+/.vsconfig/
+
+coverage/
+
+dist/
 
 node_modules
 
+yarn.lock
 
