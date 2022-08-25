@@ -1,19 +1,36 @@
 import express from 'express';
-const PORT = 3001;
-const app = express();
+import { connectDB } from "@/DB/connect"
+const PORT = 5000;
+const app: express.Express = express();
 const router = express.Router();
+// tslint:disable-next-line:no-var-requires
+require('dotenv').config();
 
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-router.get('/',
-  async (req: express.Request, res: express.Response): Promise<void> => {
-    res.send('hello world');
-  },
-);
-app.use('/', router);
+// Route
+import * as userRoute from '@/Routes/users';
+import * as taskRoute from '@/Routes/tasks';
 
-app.listen(PORT, () => console.log(`listening on port http://localhost:${PORT}`));
+// ルーティング
+app.use("/api/v0/users", userRoute);
+app.use("/api/v1/tasks", taskRoute);
 
-export default app;
+const start = async() => {
+    try {
+        // DBに接続
+        connectDB.connect();
+
+        app.listen(PORT, () => {
+            console.log('start server');
+            console.log('http://localhost:5000/');
+        })
+    } catch (error) {
+        console.log('DBへの接続に失敗しました');
+        console.warn(error)
+    }
+}
+
+start()
